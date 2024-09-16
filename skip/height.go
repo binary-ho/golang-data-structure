@@ -1,7 +1,7 @@
 package skip
 
-import "math/rand"
+import "github.com/bytedance/gopkg/lang/fastrand"
 
 func getNewHeight() int {
-	return rand.Int() % MaxHeight
+	return fastrand.Int() % MaxHeight
 }
