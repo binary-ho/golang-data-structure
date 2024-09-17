@@ -7,8 +7,8 @@ type Tree struct {
 
 func (tree *Tree) Insert(key int, value Value) {
 	newNode := newNode(key, value)
-	tree.nodes[newNode.key] = newNode
 	tree.root = tree.insert(tree.root, newNode)
+	tree.nodes[newNode.key] = newNode
 }
 
 // insert 이후의 Root를 반환
