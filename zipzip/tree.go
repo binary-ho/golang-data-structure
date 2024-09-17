@@ -129,3 +129,21 @@ func (tree *Tree) remove(newNode *Node[Value]) {
 		}
 	}
 }
+
+func (tree *Tree) Find(key int) *Node[Value] {
+	return tree.find(tree.root, Key(key))
+}
+
+func (tree *Tree) find(currentNode *Node[Value], key Key) *Node[Value] {
+	if currentNode == nil {
+		return nil
+	}
+
+	if currentNode.key == key {
+		return currentNode
+	} else if key < currentNode.key {
+		return tree.find(currentNode.left, key) // 왼쪽 서브트리로 재귀적 탐색
+	} else {
+		return tree.find(currentNode.right, key) // 오른쪽 서브트리로 재귀적 탐색
+	}
+}
