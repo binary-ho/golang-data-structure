@@ -12,43 +12,43 @@ func (tree *Tree) Insert(key int, value Value) {
 }
 
 // insert 이후의 Root를 반환
-func (tree *Tree) insert(baseNode, newNode *Node[Value]) *Node[Value] {
-	if baseNode == nil {
+func (tree *Tree) insert(current, newNode *Node[Value]) *Node[Value] {
+	if current == nil {
 		return newNode
 	}
 
-	if newNode.Key() < baseNode.Key() {
+	if newNode.Key() < current.Key() {
 		// insert 이후 SubTree의 Root 노드가 새로 삽입된 노드가 아니다.
-		newRoot := tree.insert(baseNode.left, newNode)
+		newRoot := tree.insert(current.left, newNode)
 		if newRoot != newNode {
-			return baseNode
+			return current
 		}
 
-		if newNode.rank < baseNode.rank {
-			baseNode.left = newNode
-			return baseNode
+		if newNode.rank < current.rank {
+			current.left = newNode
+			return current
 		}
 
 		// NewNode가 BaseNode보다 위에 있어야 할 때
-		baseNode.left = newNode.right
-		newNode.right = baseNode
+		current.left = newNode.right
+		newNode.right = current
 		return newNode
 	}
 
-	newRoot := tree.insert(baseNode.right, newNode)
+	newRoot := tree.insert(current.right, newNode)
 	if newRoot != newNode {
-		return baseNode
+		return current
 	}
 
 	// TODO: 왜 여기는 다른거
-	if newNode.rank <= baseNode.rank {
-		baseNode.right = newNode
-		return baseNode
+	if newNode.rank <= current.rank {
+		current.right = newNode
+		return current
 	}
 
 	// NewNode가 BaseNode보다 위에 있어야 할 때
-	baseNode.right = newNode.left
-	newNode.left = baseNode
+	current.right = newNode.left
+	newNode.left = current
 	return newNode
 }
 
