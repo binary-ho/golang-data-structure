@@ -1,10 +1,26 @@
 package zipzip
 
-import "github.com/bytedance/gopkg/lang/fastrand"
+import (
+	"math"
+	"math/rand"
+)
 
-func getRank() (rank int) {
-	for fastrand.Int()&1 == 0 {
-		rank++
+type rank struct {
+	rank1, rank2 int
+}
+
+func (tree *Tree) getRank() rank {
+	return rank{tree.randRank1(), tree.randRank2()}
+}
+
+func (tree *Tree) randRank1() int {
+	return int(math.Floor(math.Log(1-rand.Float64()) / math.Log(0.5)))
+}
+
+func (tree *Tree) randRank2() int {
+	if tree.size == 0 {
+		return 1
 	}
-	return rank
+	maxRank2 := int(math.Ceil(math.Pow(math.Log(float64(tree.size)), 3)))
+	return rand.Intn(maxRank2) + 1
 }
