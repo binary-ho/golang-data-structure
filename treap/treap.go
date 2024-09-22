@@ -73,11 +73,10 @@ func (treap *Treap) split(baseNode, newNode *Node[Value]) (*Node[Value], *Node[V
 		left, right := treap.split(baseNode.right, newNode)
 		baseNode.setRight(left)
 		return baseNode, right
-	} else {
-		left, right := treap.split(baseNode.left, newNode)
-		baseNode.setLeft(right)
-		return left, baseNode
 	}
+	left, right := treap.split(baseNode.left, newNode)
+	baseNode.setLeft(right)
+	return left, baseNode
 }
 
 func (treap *Treap) Remove(key int) {

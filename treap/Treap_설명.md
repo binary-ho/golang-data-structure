@@ -16,64 +16,61 @@ Treap은 "확률적"인 BST로, Heap과 같이 "자식노드는 부모 노드 �
 <br> <br>
 
 이러한 Treap이 좋은 이유는 BBST와 거의 비슷한 시간 복잡도를 보이면서 구현이 아주 간단하다는 것이다. <Br>
-Heap을 구현하는 정도의 난이도인데, 다른 BBST들을 생각해보면.. (AVL, Red-Black 등..) 난이도가 그렇게까지 어려운 것은 아니다.
+Heap을 구현하는 정도의 난이도인데, 다른 BBST들을 생각해보면.. (AVL Tree, Red-Black Tree 등..) 선녀인 것이다.
 
 
 ## 1. Treap Insert
 이제 Treap의 삽입을 알아보자.
 1. 노드의 우선순위는 랜덤으로 주어진다.
 2. BST에 값을 넣는 방식대로 들어가게 될 위치를 찾아 삽입하면 된다.
-3. 
+3. 새 노드가 기존 노드보다 우선순위가 높은 경우 Split한다.
 
 ```go
 func (treap *Treap) Insert(key int, value Value) {
-	root := treap.root
-	newNode := NewNode(key, value)
-	
-	// 1. Root가 Null인 경우 root에 node를 set한다.
-    if root == nil {
-        treap.root = newNode
-        return
-    }
-
-	// 2. 새로운 노드가 Root 보다도 우선순위가 높은 경우, 새로운 노드를 루트로 둔다.
-	if root.priority < newNode.priority {
-		treap.setRoot(newNode)
-		return
-	}
-
-	// 3. 새로운 노드가 Root 보다도 우선순위가 낮은 경우, 새로운 노드를 root의 자식으로 둔다.
-	if newNode.key < root.key {
-		root.setLeft(newNode)
-		return
-	}
-	root.setRight(newNode)
+    root := treap.root
+    newNode := treap.NewNode(key, value)
+    treap.root = treap.insert(root, newNode)
 }
 
-// 새 노드를 루트로 두는 작업이다.
-// 원래 트리를 분할해서 새로운 노드의 왼쪽 오른쪽에 붙인다.
-func (treap *Treap) setRoot(node *Node[Value]) {
-	left, right := treap.split(treap.root, node)
-	node.left = left
-	node.right = right
-	treap.root = node
+func (treap *Treap) insert(current, newNode *Node[Value]) *Node[Value] {
+	// 1. Root가 Null인 경우 newNode가 set될 수 있도록 newNoe
+    if current == nil {
+        return newNode
+    }
+	
+	//2. 새로운 노드가 Root 보다도 우선순위가 높은 경우, 새로운 노드를 루트로 둔다.
+    if current.priority < newNode.priority {
+        left, right := treap.split(current, newNode)
+        newNode.left = left
+        newNode.right = right
+        return newNode
+    }
+
+	// 3. 새로운 노드가 Root 보다도 우선순위가 낮은 경우, 새로운 노드를 root의 자식으로 둔다.
+    if newNode.key < current.key {
+        insert := treap.insert(current.left, newNode)
+        current.setLeft(insert)
+        return current
+    }
+    insert := treap.insert(current.right, newNode)
+    current.setRight(insert)
+    return current
 }
 
 // 재귀적인 Split
 func (treap *Treap) split(baseNode, newNode *Node[Value]) (*Node[Value], *Node[Value]) {
-	if baseNode == nil {
-		return nil, nil
-	}
-
-	if baseNode.key < newNode.key {
-		left, right := treap.split(baseNode.right, newNode)
-		baseNode.setRight(left)
-		return baseNode, right
-	} else {
-		left, right := treap.split(baseNode.left, newNode)
-		baseNode.setLeft(right)
-		return left, baseNode
-	}
+    if baseNode == nil {
+        return nil, nil
+    }
+    
+    if baseNode.key < newNode.key {
+        left, right := treap.split(baseNode.right, newNode)
+        baseNode.setRight(left)
+        return baseNode, right
+    } 
+    left, right := treap.split(baseNode.left, newNode)
+    baseNode.setLeft(right)
+    return left, baseNode
 }
 ```
 
@@ -185,4 +182,24 @@ func (treap *Treap) find(nodeNow *Node[Value], index int) *Node[Value] {
 그러면 이제 오른쪽 자식 노드가 탐색할 새로운 트리의 루트이고, 내가 찾는 노드의 인덱스는 `index - lifeSize`인 것이다.
 
 
-## 4. Treap 시간복잡도 증명
+[//]: # (## 높이 증명)
+
+[//]: # ()
+[//]: # (노드가 N개인 어떤 Treap에서 특정 노드를 찾을 때의 시간 복잡도가 O&#40;logN&#41;임을 증명한다.)
+
+[//]: # (Root 부터 Treap을 탐색하는 경우를 생각해보자.)
+
+[//]: # (현재 탐색중인 노드를 "현재 노드"라고 부르겠다.)
+
+[//]: # (예를 들어 루트에서 왼쪽으로 탐색하기 위해 왼쪽 자식 노드로 이동했다면, 이제 왼쪽 자식 노드가 "현재 노드"이다.)
+
+[//]: # ()
+[//]: # (1. 현재 노드는 서브 트리 내의 루트 노드로써, 서브 트리 내의 노드들 중 최대의 우선순위를 가짐이 명백하다.)
+
+[//]: # (2. 서브 트리의 모든 노드를 오름차순으로 정렬했다고 생각해봤을 때, 서브 트리의 루트 &#40;현재 노드&#41;가 가진 숫자가 k번째 번째 숫자라고 생각해보자.)
+
+[//]: # (   그러면 왼쪽 자식 노드가 루트인 서브 트리는 k-1개의 숫자가 있고, 오른쪽 자식이 루트인 서브 트리에는 N-k개의 숫자가 있을 것이다.)
+
+[//]: # (3. 우리가 찾는 노드가 왼쪽에 있을 확률은 &#40;k-1&#41;/N, 오른쪽에 있을 확률은 &#40;N-k&#41;/N, 현재 노드인 확률은 1/N일 것이다.)
+
+[//]: # (4. 이번 단계에서 )
