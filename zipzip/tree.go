@@ -1,12 +1,22 @@
 package zipzip
 
+import "go-data-structure/random"
+
 type Tree struct {
-	root *Node[Value]
-	size int
+	root   *Node[Value]
+	size   int
+	random *random.Tree
+}
+
+func NewTree(maxRank int) *Tree {
+	return &Tree{
+		root:   nil,
+		random: random.NewUint32Tree(maxRank),
+	}
 }
 
 func (tree *Tree) Insert(key int, value Value) {
-	newNode := newNode(key, value)
+	newNode := tree.newNode(key, value)
 	tree.insert(newNode)
 	tree.size++
 }
@@ -72,7 +82,7 @@ func (tree *Tree) insert(newNode *Node[Value]) {
 }
 
 func (tree *Tree) Remove(key int, value Value) {
-	newNode := newNode(key, value)
+	newNode := tree.newNode(key, value)
 	tree.remove(newNode)
 	tree.size--
 }

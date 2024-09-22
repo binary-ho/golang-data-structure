@@ -6,27 +6,27 @@ import (
 )
 
 type Table struct {
-	maxHeight   int8
+	maxRank     int8
 	randomTable *[]uint32
 }
 
-func NewTable(maxHeight int8) *Table {
-	maxHeight = min(maxHeight, MaxHeight)
-	table := make([]uint32, maxHeight+1)
+func NewTable(maxRank int8) *Table {
+	maxRank = min(maxRank, MaxRank)
+	table := make([]uint32, maxRank+1)
 	value := uint32(math.MaxUint32)
-	for height := int8(0); height <= maxHeight; height++ {
-		table[height] = value
+	for rank := int8(0); rank <= maxRank; rank++ {
+		table[rank] = value
 		value >>= 1
 	}
-	return &Table{maxHeight, &table}
+	return &Table{maxRank, &table}
 }
 
-func (t *Table) Height() int {
+func (t *Table) Rank() int {
 	uint32Number := rand.Uint32()
 	table := *t.randomTable
-	height := int8(0)
-	for height <= t.maxHeight && uint32Number <= table[height] {
-		height++
+	rank := int8(0)
+	for rank <= t.maxRank && uint32Number <= table[rank] {
+		rank++
 	}
-	return int(height)
+	return int(rank)
 }

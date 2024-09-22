@@ -1,7 +1,17 @@
 package treap
 
+import "go-data-structure/random"
+
 type Treap struct {
-	root *Node[Value]
+	root   *Node[Value]
+	random *random.Tree
+}
+
+func NewTreap() *Treap {
+	return &Treap{
+		root:   nil,
+		random: random.NewUint32Tree(16),
+	}
 }
 
 func (treap *Treap) Find(index int) *Node[Value] {
@@ -28,7 +38,7 @@ func (treap *Treap) find(nodeNow *Node[Value], index int) *Node[Value] {
 
 func (treap *Treap) Insert(key int, value Value) {
 	root := treap.root
-	newNode := NewNode(key, value)
+	newNode := treap.NewNode(key, value)
 	if root == nil {
 		treap.root = newNode
 		return

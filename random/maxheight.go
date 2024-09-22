@@ -1,3 +1,3 @@
 package random
 
-const MaxHeight = 16
+const MaxRank = 16

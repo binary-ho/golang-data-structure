@@ -1,7 +1,5 @@
 package treap
 
-import "github.com/bytedance/gopkg/lang/fastrand"
-
 type Node[V Value] struct {
 	key            int
 	value          V
@@ -9,12 +7,11 @@ type Node[V Value] struct {
 	left, right    *Node[V]
 }
 
-func NewNode[V Value](key int, value V) *Node[V] {
-	priority := fastrand.Int()
-	return &Node[V]{
+func (treap *Treap) NewNode(key int, value Value) *Node[Value] {
+	return &Node[Value]{
 		key:      key,
 		value:    value,
-		priority: priority,
+		priority: treap.random.Rank(),
 		size:     1,
 		left:     nil,
 		right:    nil,

@@ -1,12 +1,22 @@
 package zip
 
+import "go-data-structure/random"
+
 type Tree struct {
-	root  *Node[Value]
-	nodes map[Key]*Node[Value]
+	root   *Node[Value]
+	nodes  map[Key]*Node[Value]
+	random *random.Tree
+}
+
+func NewTree(maxRank int) *Tree {
+	return &Tree{
+		nodes:  make(map[Key]*Node[Value], maxRank),
+		random: random.NewUint32Tree(maxRank),
+	}
 }
 
 func (tree *Tree) Insert(key int, value Value) {
-	newNode := newNode(key, value)
+	newNode := tree.newNode(key, value)
 	tree.root = tree.insert(tree.root, newNode)
 	tree.nodes[newNode.key] = newNode
 }

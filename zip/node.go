@@ -9,11 +9,11 @@ type Node[V Value] struct {
 
 type Key int
 
-func newNode(key int, value Value) *Node[Value] {
+func (tree *Tree) newNode(key int, value Value) *Node[Value] {
 	return &Node[Value]{
 		key:   Key(key),
 		value: value,
-		rank:  getRank(),
+		rank:  tree.random.Rank(),
 	}
 }
 

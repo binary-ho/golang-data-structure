@@ -11,15 +11,15 @@ type Tree struct {
 	tree *yorkiellrb.Tree[*Key, *Value]
 }
 
-func NewUint32Tree(maxHeight int) *Tree {
-	maxHeight = min(maxHeight, MaxHeight)
+func NewUint32Tree(maxRank int) *Tree {
+	maxRank = min(maxRank, MaxRank)
 	tree := &Tree{tree: yorkiellrb.NewTree[*Key, *Value]()}
 	key := math.MaxUint32
-	for height := 0; height <= maxHeight; height++ {
-		tree.put(key, height)
+	for rank := 0; rank <= maxRank; rank++ {
+		tree.put(key, rank)
 		key >>= 1
 	}
-	tree.put(0, maxHeight)
+	tree.put(0, maxRank)
 	return tree
 }
 
@@ -29,7 +29,7 @@ func (tree *Tree) put(key, value int) {
 	tree.tree.Put(&treeKey, &treeValue)
 }
 
-func (tree *Tree) Height() int {
+func (tree *Tree) Rank() int {
 	uint32Number := rand.Uint32()
 	key := Key(uint32Number)
 	_, value := tree.tree.Floor(&key)
