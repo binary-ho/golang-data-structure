@@ -39,29 +39,29 @@ func (treap *Treap) find(nodeNow *Node[Value], index int) *Node[Value] {
 func (treap *Treap) Insert(key int, value Value) {
 	root := treap.root
 	newNode := treap.NewNode(key, value)
-	if root == nil {
-		treap.root = newNode
-		return
-	}
-
-	// set newNode to root
-	if root.priority < newNode.priority {
-		treap.setRoot(newNode)
-		return
-	}
-
-	if newNode.key < root.key {
-		root.setLeft(newNode)
-		return
-	}
-	root.setRight(newNode)
+	treap.root = treap.insert(root, newNode)
 }
 
-func (treap *Treap) setRoot(node *Node[Value]) {
-	left, right := treap.split(treap.root, node)
-	node.left = left
-	node.right = right
-	treap.root = node
+func (treap *Treap) insert(current, newNode *Node[Value]) *Node[Value] {
+	if current == nil {
+		return newNode
+	}
+
+	if current.priority < newNode.priority {
+		left, right := treap.split(current, newNode)
+		newNode.left = left
+		newNode.right = right
+		return newNode
+	}
+
+	if newNode.key < current.key {
+		insert := treap.insert(current.left, newNode)
+		current.setLeft(insert)
+		return current
+	}
+	insert := treap.insert(current.right, newNode)
+	current.setRight(insert)
+	return current
 }
 
 func (treap *Treap) split(baseNode, newNode *Node[Value]) (*Node[Value], *Node[Value]) {
