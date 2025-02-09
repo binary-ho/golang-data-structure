@@ -1,10 +1,10 @@
-package llrb
+package statistic
 
-func (node *Node[K, V]) InitWeight() {
+func (node *Node[V]) InitWeight() {
 	node.weight = node.value.Len()
 }
 
-func (node *Node[K, V]) UpdateTreeWeight() {
+func (node *Node[V]) UpdateTreeWeight() {
 	currentNode := node
 	for currentNode != nil {
 		currentNode.updateWeight()
@@ -13,7 +13,7 @@ func (node *Node[K, V]) UpdateTreeWeight() {
 }
 
 // updateWeight recalculates the weight of this node with the value and children.
-func (node *Node[K, V]) updateWeight() {
+func (node *Node[V]) updateWeight() {
 	node.InitWeight()
 
 	if node.left != nil {
@@ -25,18 +25,18 @@ func (node *Node[K, V]) updateWeight() {
 	}
 }
 
-func (node *Node[K, V]) increaseWeight(weight int) {
+func (node *Node[V]) increaseWeight(weight int) {
 	node.weight += weight
 }
 
-func (node *Node[K, V]) leftWeight() int {
+func (node *Node[V]) leftWeight() int {
 	if node.left == nil {
 		return 0
 	}
 	return node.left.weight
 }
 
-func (node *Node[K, V]) rightWeight() int {
+func (node *Node[V]) rightWeight() int {
 	if node.right == nil {
 		return 0
 	}
